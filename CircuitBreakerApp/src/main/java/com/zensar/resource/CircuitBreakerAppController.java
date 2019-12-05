@@ -42,6 +42,21 @@ public class CircuitBreakerAppController {
 		return result;
 	}
 	
+	@GetMapping("/getHR")
+	@HystrixCommand(fallbackMethod = "unknown")
+	public String getHRUsingZuul() {
+		/**
+		 * In Below API we have provided name like zuul-edge-service two times because 1st one is to look for 
+		 * that service in Discovery Server and 2nd is for the context path as we have setup in our Micro-service
+		 * next we have provided the two /hr first one to mapped with properties in 
+		 * 
+		 * Zuul Service like -  "zuul.routes.hr.url=http://localhost:8080/hr-ms/" as you can see reversed proxy is mapped 
+		 * with url " http://localhost:8080/hr-ms/ " so any rest URI should go after this.
+		 * 1st /hr is for looking for mapping in Zuul and 2nd is for HRController is having /hr at top.
+		 */
+		String result = restTemplate.getForObject("http://zuul-edge-service/zuul-edge-service/hr/hr/get",String.class);
+		return result;
+	}
 	
 	
 }
